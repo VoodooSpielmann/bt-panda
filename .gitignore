@@ -1,0 +1,7 @@
+/core/*
+/connectors/*
+/assets/components/*
+/assets/node_modules/*
+/manager/*
+/index.php
+/modxreplace.php

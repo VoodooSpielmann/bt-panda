@@ -1,0 +1,31 @@
+@import 'nib'
+@import 'rupture'
+//@import '../fonts/stylesheet.css'
+
+rupture[mobile-cutoff] = 576px
+rupture[desktop-cutoff] = 768px
+rupture[hd-cutoff] = 992px
+color1 = #CCC
+
+*:hover, *:active, *:focus
+  outline 0px !important
+  -webkit-appearance none
+
+.btn:focus
+  box-shadow none
+
+.container
+  +hd()
+    max-width 100%
+  +desktop()
+    max-width 1200px
+  +tablet()
+    max-width 775px
+  +mobile()
+    max-width 600px
+
+.parallax
+  background-position 50% 50%
+  background-repeat no-repeat
+  background-attachment fixed
+  background-size cover

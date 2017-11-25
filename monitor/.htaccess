@@ -1,0 +1,3 @@
+<Files monitor.php>
+  deny from all
+</Files>

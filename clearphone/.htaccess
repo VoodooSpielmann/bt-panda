@@ -1,0 +1,3 @@
+<Files clearphone.php>
+  deny from all
+</Files>

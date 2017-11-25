@@ -1,0 +1,38 @@
+mixin array(amount)
+  - for (var i = 1; i < amount+1; i++)
+    each val in ["1","2","3","4","5"]
+      .item= val
+block var
+  -var title = "Заголовок"
+  -var assets = "" // ../assets
+  -var min = "" // .min
+  -var img = "" // css/img/
+doctype html
+html(lang="ru")
+  block head
+    head
+      meta(http-equiv="X-UA-Compatible" content="IE=edge")
+      meta(name='viewport', content='width=device-width, initial-scale=1, minimum-scale=1')
+      meta(charset='utf-8')
+      title= title
+      //[[*pagetitle]] | [[++site_name]]
+      //base(href="[[!++site_url]]")
+      meta(name='description', content='[[*description]]')
+      meta(name='keywords', content='[[*keywords]]')
+      meta(name='author', content='pandaworks.ru')
+      meta(property='og:title', content='[[*pagetitle]]')
+      meta(property="og:description" content="[[*description:empty=`[[*pagetitle]]`]]")
+      meta(property='og:type', content='website')
+      meta(property='og:url', content='[[++site_url]][[~[[*id]]]]')
+      meta(property='og:image', content=assets+img+'ogimage.png')
+      each val in ["bootstrap","style"] //- style всегда должен быть в конце
+        link(rel="stylesheet" type="text/css" href=assets+"css/"+val+min+".css")
+  body
+    block header
+    block content
+    block footer
+    block scripts
+      script(type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js")
+      each val in ["bootstrap","script"] //- script всегда должен быть в конце
+        script(type="text/javascript" src=assets+"js/" + val + min + ".js")
+      #monitorModx(style="display:none;") [^qt^];[^q^];[^p^];[^t^];[^s^]
