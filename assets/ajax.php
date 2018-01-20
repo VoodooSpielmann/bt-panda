@@ -14,30 +14,37 @@ $modx->error->message = null;
 
 $output = '';
 switch ($action) {
+    
     case 'getMIGX':
         $migxid = isset($_POST['migxid']) ? (int) $_POST['migxid'] : 0;
-        if (empty($migxid)) {
-            exit();
-        };
+        if (empty($migxid)) {exit();};
+
+        //Запуск сниппета с параметрами
         $output = $modx->runSnippet('getImageList',array(
-            'tvname' => 'catalogCategories',
+            'tvname' => 'nameOfMIGXTV',
             'where' => '{"MIGX_id:=":"'.$migxid.'"}',
-            'tpl' => 'catalogCategoryModal'
+            'tpl' => 'nameOfTpl'
         ));
+
     case 'getContent':
         $id = isset($_POST['id']) ? (int) $_POST['id'] : 0;
-        if (empty($id)) {
-            exit();
-        };
+        if (empty($id)) {exit();};
 
         $object = $modx->getObject('modResource',$id);
 
         $output = array();
+
+        //Обычные поля
         $output['content'] = $object->get('content');
         $output['pagetitle'] = $object->get('pagetitle');
         $output['alias'] = $object->get('alias');
+
+        //TV
         $output['image'] = $object->getTVValue('image');
+
         $output = json_encode($output);
+
+        //Обработка тегов MODX
         $maxIterations= (integer) $modx->getOption('parser_max_iterations', null, 10);
         $modx->getParser()->processElementTags('', $output, false, false, '[[', ']]', array(), $maxIterations);
         $modx->getParser()->processElementTags('', $output, true, true, '[[', ']]', array(), $maxIterations);

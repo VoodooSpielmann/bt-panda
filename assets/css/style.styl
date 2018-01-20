@@ -1,31 +1,61 @@
 @import 'nib'
 @import 'rupture'
-//@import '../fonts/stylesheet.css'
 
-rupture[mobile-cutoff] = 576px
-rupture[desktop-cutoff] = 768px
-rupture[hd-cutoff] = 992px
-color1 = #CCC
+/*Зачарование пикселей в ремы*/
+rem() {
+  remified = ()
+  for arg in arguments {
+    push(remified, unit(arg/16, 'rem'))
+  }
+  return remified
+}
 
+/*Изменение цвета аттрибута placeholder*/
+placeholder(color)
+  &::-webkit-input-placeholder
+    color color
+  &::-moz-placeholder
+    color color
+  &:-ms-input-placeholder
+    color color
+  &::placeholder
+    color color
+
+/*Адаптив*/
+rupture.scale =       0    576px    768px    992px    1200px
+rupture.scale-names =  'xs'     'sm'     'md'     'lg'      'xl'
+
+/*Цвета*/
+color1 = #ССС
+
+/*Шрифты*/
+font1 = sans-serif
+
+/*Обнуление эффектов при наведении*/
 *:hover, *:active, *:focus
-  outline 0px !important
+  outline 0 !important
   -webkit-appearance none
 
 .btn:focus
   box-shadow none
 
-.container
-  +hd()
-    max-width 100%
-  +desktop()
-    max-width 1200px
-  +tablet()
-    max-width 775px
-  +mobile()
-    max-width 600px
-
+/*Примитивный параллакс*/
 .parallax
   background-position 50% 50%
   background-repeat no-repeat
   background-attachment fixed
   background-size cover
+
+/*Мобильное меню*/
+.menu-mobile
+  background-color #fff
+  size 100%
+  position fixed
+  top 0
+  right -100%
+  transition all 1.2s cubic-bezier(0.2, 1, 0.2, 1)
+  overflow auto
+  z-index 300
+.open
+  .menu-mobile
+    right 0

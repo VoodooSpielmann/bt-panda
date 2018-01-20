@@ -2,6 +2,8 @@
 /connectors/*
 /assets/components/*
 /assets/node_modules/*
-/manager/*
 /index.php
 /modxreplace.php
+/manager.policy.xml
+/htcache
+/manager/*

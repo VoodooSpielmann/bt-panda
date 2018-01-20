@@ -11,22 +11,22 @@ $(document).ready(function(){
     window.guid = guid;
     bindLabels = function() {
         $('input[type="checkbox"], input[type="radio"]').not('[id]').each(function() {
-            var id;
-            id = guid();
-            $(this).attr('id', id);
-            if ($(this).next().is('label')) {
-                return $(this).next().attr('for', id);
+            var id = guid();
+                th = $(this);
+            th.attr('id', id);
+            if (th.next().is('label')) {
+                return th.next().attr('for', id);
             }
         });
         return $('label').not('[for]').each(function() {
-            var id;
-            id = guid();
-            if ($(this).next().is('input,textarea,select')) {
-                $(this).attr('for', id);
-                return $(this).next().attr('id', id);
-            } else if ($(this).prev().is('input,textarea,select')) {
-                $(this).attr('for', id);
-                return $(this).prev().attr('id', id);
+            var id = guid();
+                th = $(this);
+            if (th.next().is('input,textarea,select')) {
+                th.attr('for', id);
+                return th.next().attr('id', id);
+            } else if (th.prev().is('input,textarea,select')) {
+                th.attr('for', id);
+                return th.prev().attr('id', id);
             }
         });
     };
@@ -42,81 +42,58 @@ $(document).ready(function(){
 
     /* Получение текущего года. */
     $('#getFullYear').html(now.getFullYear());
-
-
-    /* Подгрузка параметров ресурса в модальное окно через /assets/ajax.php в #catalogModalBody. */
-    $(document).on('click','.btn-catalog',function(e){
-        e.preventDefault();
-        var migxid = $(this).data('migxid') || 0;
-        $("#catalogModalBody").load("/assets/ajax.php",{action:"getContent",migxid:migxid});
-    });
     
-    /* Разбор параметров из MIGX. На входе json. Параметры уходят в #toID. */
-    function jsonMIGX(jsonInput,toID){
-        var objFull = JSON.parse(jsonInput);
-        i = 0;
-        while (i < objFull.length){
-            $(toID).append('<p>' + objFull[i].parameter + ' ' + objFull[i].value + '</p>');
-            i++;
-        }
-    }
-
-    /* Разбор многоуровневого набора параметров из MIGX в json в toID (1 уровень), и toIDTab (2 уровень). */
-    function jsonInsideMIGX(jsonInput,toID,toIDTab){
-        var objFull = JSON.parse(jsonInput);
-        i = 0;
-        while (i < objFull.length){
-            /* Вывод первого уровня параметров: id, параметр, изображение в #toID*/
-            $(toID).append('<p id="tab' + objFull[i].MIGX_id + '" data-toggle="tab" data-parameter="' + objFull[i].parameter + '" data-image="' + objFull[i].image + '">' + objFull[i].parameter + '</p>');
-            $(toIDTab).append('<div id="getLevelTwo' + objFull[i].MIGX_id + '"><ul></ul></div>');
-            var objFullInside = JSON.parse(objFull[i].value);
-            var j = 0;
-            while (j < objFullInside.length) {
-                /* Вывод второго уровня параметров: id, параметр 2 уровня, значение в #toIDTab #getLevelTwo[id] ul*/
-                $(toIDTab + ' #getLevelTwo' + objFull[i].MIGX_id + ' ul').append('<li><p id="point' + objFullInside[j].MIGX_id + '">' + objFullInside[j].parameter + ' - ' + objFullInside[j].value + '</p></li>');
-                j++;
-            }
-            i++;
-        }
-    }
-
-    /* Подгрузка параметров ресурса в модальное окно через /assets/ajax.php в #orderModalTitle. */
-    $(document).on('click','.read-more',function(e){
+    /* Подгрузка параметров ресурса в модальное окно через /assets/ajax.php в #orderModalTitle.*/
+    $(document).on('click','.loadAjax',function(e){
         e.preventDefault();
         var id = $(this).data('id') || 0;
-        $("#orderModalTitle").load("/assets/ajax.php",{action:"getContent",id:id}, function(response){
+        $(".loadAjaxBlock").load("/assets/ajax.php",{action:"getContent",id:id}, function(response){
             if (response) {
-                var data = eval("(" + response + ")");
-                /*Стандартное поле*/
-                $('#orderModalPagetitle').val(data.pagetitle);
-                /*Дополнительное поле*/
-                $('#orderModalValue').html(data.value);
-                if(data.valueMaybe) {
-                    $('#orderModalValueMaybe').html(data.valueMaybe);
-                }
-                /*Изображение с возможностью возврата исходного изображения через data-oldimage. */
-                $("#orderModalImage").attr("src", data.image).data("oldimage", data.image);
-                /*MIGX*/
-                if(data.parameters){
-                    jsonMIGX(data.parameters,'#orderModalParameters');
-                }
-                if(data.parametersTwoLevel){
-                    jsonInsideMIGX(data.parametersTwoLevel,'#orderModalParametersFirstLevel','#orderModalParametersSecondLevel');
-                }
-                $("#orderModal").modal('show');
+                $("#modal").modal('show');
             }
         });
     });
 
-    /* Очистка полей для MIGX. */
-    $('#orderModal').on('hidden.bs.modal', function () {
-        $('#orderModalParameters').html('');
-        $('#orderModalParametersFirstLevel').html('');
-        $('#orderModalParametersSecondLevel').html('');
-    });
-
-    /*Запись data-value в input #getValue при нажатии на .getvalue. */
+    /*Запись data-value в input #getValue при нажатии на .getvalue.*/
     $(document).on('click','.getvalue',function(){
         $('#getValue').val($(this).data("value"));
+    });
+
+    /*Резиновая по высоте карта с блоком контактов внутри него. Опирается на высоту .contacts.*/
+    var mapHeight = $('.contacts').innerHeight();
+    $('.map').innerHeight(mapHeight+110);
+
+    /*Плавный скролл к якорю*/
+    $('a[href^="#"]').click(function() {
+        var el = $(this).attr("href");
+
+        /*Работает из мобильного меню*/
+        if($('body').hasClass('open')) {
+            $('body').removeClass('open');
+        }
+
+        $("body,html").animate({
+            scrollTop: $(el).offset().top
+        }, 500);
+        return false;
+    });
+
+    /*Мобильное меню*/
+    $('.btn-mobile-menu').click(function () {
+        $('body').toggleClass('open');
+    });
+
+    /*Запись данных в форму в модальном окне*/
+    $('[data-target]').on('click', '', function () {
+        var th = $(this);
+        if (th.data("reason")){
+            $('.callOrderReason').val(th.data("reason"));
+        }
+        if (th.data("header")){
+            $('.callOrderHeader').text(th.data("header"));
+        }
+        if (th.data("goal")){
+            $('#goalMetrikaModal').val(th.data("goal"));
+        }
     });
 });

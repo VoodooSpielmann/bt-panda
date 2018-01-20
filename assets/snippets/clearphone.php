@@ -6,19 +6,24 @@
     Подойдет для MIGX
     [[+phone:clearPhone]]
 */
+function clearPhone($phone){
+    $clear = str_replace(array('(', ')', '-', ' ','<span>','</span>'), '' , $phone);
+    if ($clear[0] == 8) {
+        $clear[0] = '7';
+    }
+    return '+'.$clear;
+}
+$output = '';
+
 if($input){
-    $output = str_replace(array('(', ')', '-', ' '), '' , $input);
+    $output = clearPhone($input);
 } else {
     if (!empty($id) && is_numeric($id)) {
         if (!empty($tv)) {
             $resourcePhoneId = $modx->getObject('modResource', $id);
             $resourcePhoneTV = $resourcePhoneId->getTVValue($tv);
-            $output = str_replace(array('(', ')', '-', ' '), '' , $resourcePhoneTV);
-        } else {
-            $output = '';
+            $output = clearPhone($resourcePhoneTV);
         }
-    } else {
-        $output = '';
     }
 }
 return $output;

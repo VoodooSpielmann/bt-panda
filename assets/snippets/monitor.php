@@ -1,6 +1,6 @@
 <?php
 //Монитор производительности
-//[[++manager_path]]monitor/monitor.php
+//[[++assets_path]]/snippets/monitor/monitor.php
 $site = '://' . $_SERVER['SERVER_NAME'];
 if (isset($_SERVER['HTTPS'])) {
     $site = ($_SERVER['HTTPS'] && $_SERVER['HTTPS'] != "off") ? "https" . $site : "http" . $site;

@@ -1,4 +1,9 @@
 <?php
+  //защита от повторной отправки
+  session_start();
+  if (!isset($_SESSION['sendform'])){
+    $_SESSION['sendform'] = md5(rand(1,9999)).'modx';
+  }
 
   //поиск значения переменной по ее названию $string в строке $file
   function getString($string,$file){
@@ -28,23 +33,37 @@
   //путь к админке
   $managerName = basename(getString('modx_manager_path',$fileConfig));
 
+  $files = array(
+    'core' => $config,
+    'root' => 'config.core.php',
+    'connectors' => 'connectors/config.core.php',
+    'manager' => $managerName . '/config.core.php'
+  );
+
   //если все 6 обязательных полей заполнены, происходит замена
   if ($_POST['newpath'] &&
       $_POST['domain'] &&
       $_POST['database_user'] &&
       $_POST['dbase'] &&
       $_POST['table_prefix'] &&
-      $_POST['manager']) {
-    
+      $_POST['manager'] &&
+      $_POST['sendform'] == $_SESSION['sendform']) {
+      unset($_SESSION['sendform']);
+
+      //замена папки админки
+      if($_POST['manager'] != $managerName){
+        rename($managerName,$_POST['manager']);
+
+        //обновление .gitignore
+        $gitIgnore = file_get_contents('.gitignore');
+        $gitIgnore = str_replace('/'.$managerName.'/*','/'.$_POST['manager'].'/*',$gitIgnore);
+        file_put_contents('.gitignore', $gitIgnore);
+
+        $managerName = $_POST['manager'];
+        $files['manager'] = $managerName . '/config.core.php';
+      }
       //замена слэшей в новом пути
       $newPathSlashes = str_replace('\\','/',$_POST['newpath']);
-
-      $files = array(
-        'core' => $config,
-        'root' => 'config.core.php',
-        'connectors' => 'connectors/config.core.php',
-        'manager' => $managerName . '/config.core.php'
-      );
 
       //уникальные строки
       $uniqueStrings = array(
@@ -106,12 +125,12 @@
                           break;
                       case 'modx_manager_path':
                           $stringToReplace = getString($word,$val);
-                          $finalString = $newPathSlashes.'/'.$_POST['manager'].'/';
+                          $finalString = $newPathSlashes.'/'.$managerName.'/';
                           $fileArray[$key] = str_replace($stringToReplace,$finalString,$val);
                           break;
                       case 'modx_manager_url':
                           $stringToReplace = getString($word,$val);
-                          $fileArray[$key] = str_replace($stringToReplace,$_POST['manager'],$val);
+                          $fileArray[$key] = str_replace($stringToReplace,'/'.$managerName.'/',$val);
                           break;
                       default:
                           $stringToReplace = getString($word,$val);
@@ -128,7 +147,7 @@
             break;
             default:
               //новый путь к ядру
-              $pathToCore = $newPathSlashes.'/core';
+              $pathToCore = $newPathSlashes.'/core/';
 
               //обход остальных файлов
               foreach($fileArray as $key=>$val){
@@ -139,8 +158,26 @@
               file_put_contents($filePath, $fileArray);
           }
       }
+    //очистка кэша
+    function clearCache($path) {
+      if (is_file($path)) return unlink($path);
+      if (is_dir($path)) {
+        foreach(scandir($path) as $val) if (($val!='.') && ($val!='..'))
+          clearCache($path.DIRECTORY_SEPARATOR.$val);
+        return rmdir($path); 
+        }
+      return false;
+    }
+    clearCache('core/cache');
+
+    //обновление .htaccess
+    $htAccess = @file_get_contents('.htaccess');
+    $htCache = file_get_contents('htcache');
+    if (!empty($htAccess) && stripos($htAccess,'#htcache') === false){
+      file_put_contents('.htaccess', PHP_EOL . $htCache, FILE_APPEND);
+    }
+
     echo '<div class="success">Замена прошла успешно!</div>';
-    //todo ручная коррекция
   }
 ?>
 <!DOCTYPE html>
@@ -225,7 +262,7 @@
     <div class="container">
       <div class="panel">
         <form action="" method="post">
-          <button class="btn" type="submit">Заменить</button>
+          <button class="btn" type="submit" value="<?=$_SESSION['sendform']?>" name="sendform">Заменить</button>
           <div class="clear"></div>
           <div class="form-group">
             <label>Путь на хостинге</label>
@@ -259,7 +296,7 @@
         <p>Этот файл следует удалить сразу же после использования и не хранить в одной директории с боевой версией сайта.</p>
       </div>
       <div class="panel">
-        <p>Другие скрипты:</p>
+        <p>Другие скрипты:<?=file_get_contents('config.core.php')?></p>
         <a class="link" href="zip.php">Запаковать весь сайт в zip-архив</a>
         <a class="link" href="adminer.php">Упрощенный доступ к MySQL</a>
       </div>

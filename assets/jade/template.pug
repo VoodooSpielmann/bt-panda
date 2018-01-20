@@ -1,38 +1,66 @@
 mixin array(amount)
-  - for (var i = 1; i < amount+1; i++)
+    - for (var i = 1; i < amount+1; i++)
     each val in ["1","2","3","4","5"]
-      .item= val
+        .item= val
 block var
-  -var title = "Заголовок"
-  -var assets = "" // ../assets
-  -var min = "" // .min
-  -var img = "" // css/img/
+    -var title = "Заголовок"
+    -var assets = "../assets/"
+    -var min = "" // .min
+    -var img = assets+"css/img/"
+    -var tabcolor = "#FFF"
+    -var map = false
 doctype html
 html(lang="ru")
-  block head
-    head
-      meta(http-equiv="X-UA-Compatible" content="IE=edge")
-      meta(name='viewport', content='width=device-width, initial-scale=1, minimum-scale=1')
-      meta(charset='utf-8')
-      title= title
-      //[[*pagetitle]] | [[++site_name]]
-      //base(href="[[!++site_url]]")
-      meta(name='description', content='[[*description]]')
-      meta(name='keywords', content='[[*keywords]]')
-      meta(name='author', content='pandaworks.ru')
-      meta(property='og:title', content='[[*pagetitle]]')
-      meta(property="og:description" content="[[*description:empty=`[[*pagetitle]]`]]")
-      meta(property='og:type', content='website')
-      meta(property='og:url', content='[[++site_url]][[~[[*id]]]]')
-      meta(property='og:image', content=assets+img+'ogimage.png')
-      each val in ["bootstrap","style"] //- style всегда должен быть в конце
-        link(rel="stylesheet" type="text/css" href=assets+"css/"+val+min+".css")
-  body
-    block header
-    block content
-    block footer
-    block scripts
-      script(type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js")
-      each val in ["bootstrap","script"] //- script всегда должен быть в конце
-        script(type="text/javascript" src=assets+"js/" + val + min + ".js")
-      #monitorModx(style="display:none;") [^qt^];[^q^];[^p^];[^t^];[^s^]
+    block head
+        head
+            meta(http-equiv="X-UA-Compatible" content="IE=edge")
+            meta(name='viewport', content='width=device-width, initial-scale=1, minimum-scale=1')
+            meta(charset='utf-8')
+            title= title
+            //[[*pagetitle]] | [[++site_name]]
+            //base(href="[[++site_url]]")
+            meta(name='description', content='[[*description]]')
+            meta(name='keywords', content='[[*keywords]]')
+            meta(name='author', content='pandaworks.ru')
+            meta(property='og:title', content='[[*pagetitle]]')
+            meta(property="og:description" content="[[*description:empty=`[[*pagetitle]]`]]")
+            meta(property='og:type', content='website')
+            meta(property='og:url', content='[[++site_url]][[~[[*id]]]]')
+            meta(property='og:image', content=img + 'ogimage.png')
+            meta(name="theme-color" content=tabcolor)
+            link(rel="stylesheet" type="text/css" href=assets + "fonts/stylesheet" + min + ".css")
+            each val in ["bootstrap","style"]
+                link(rel="stylesheet" type="text/css" href=assets + "css/" + val + min + ".css")
+    body
+        block header
+          //-button.btn(data-toggle="modal" data-target="#modalId" data-reason="Название для получателя письма" data-header="[[pdoField? &id=`[[++site_start]]` &field=`modalHeader`]]" data-goal="metrikaModalHeader") Модальное окно
+        block mobilemenu
+        block content
+        block footer
+        block modal
+            .modal.fade#acceptModal(role="dialog")
+                .modal-dialog.modal-lg
+                    .modal-content
+                        .modal-header
+                            .modal-title Согласие на обработку персональных данных
+                            button.close(data-dismiss="modal") &times;
+                        .modal-body
+                            //-.modal-text [[pdoField? &id=`[[++site_start]]` &field=`politikaAccept`]]
+            .modal.fade#politikaModal(role="dialog")
+                .modal-dialog.modal-lg
+                    .modal-content
+                        .modal-header
+                            .modal-title Политика конфиденциальноси
+                            button.close(data-dismiss="modal") &times;
+                        .modal-body
+                            //-.modal-text [[pdoField? &id=`[[++site_start]]` &field=`politikaConfidency`]]
+        block scripts
+            script(type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js")
+            if map
+                script(type="text/javascript" src="http://api-maps.yandex.ru/2.1/?lang=ru_RU")
+                script(type="text/javascript" src=assets + "js/ymapstouch" + min + ".js")
+                script
+                    include ../js/map.js
+            each val in ["bootstrap","script"]
+                script(type="text/javascript" src=assets + "js/" + val + min + ".js")
+            #monitorModx(style="display:none;") [^qt^];[^q^];[^p^];[^t^];[^s^]
