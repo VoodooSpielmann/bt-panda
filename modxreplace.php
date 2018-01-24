@@ -171,10 +171,27 @@
     clearCache('core/cache');
 
     //обновление .htaccess
-    $htAccess = @file_get_contents('.htaccess');
-    $htCache = file_get_contents('htcache');
-    if (!empty($htAccess) && stripos($htAccess,'#htcache') === false){
-      file_put_contents('.htaccess', PHP_EOL . $htCache, FILE_APPEND);
+
+    if(file_exists('.htaccess')){
+      $htAccess = file_get_contents('.htaccess');
+      $htCache = '#htcache
+<IfModule mod_expires.c>
+  Header append Cache-Control "public"
+  FileETag MTime Size
+  ExpiresActive On
+  ExpiresDefault "access plus 0 minutes"
+  ExpiresByType image/ico "access plus 1 years"
+  ExpiresByType text/css "access plus 1 years"
+  ExpiresByType text/javascript "access plus 1 years"
+  ExpiresByType image/gif "access plus 1 years"
+  ExpiresByType image/jpg "access plus 1 years"
+  ExpiresByType image/jpeg "access plus 1 years"
+  ExpiresByType image/bmp "access plus 1 years"
+  ExpiresByType image/png "access plus 1 years"
+</IfModule>';
+      if (!empty($htAccess) && stripos($htAccess,'#htcache') === false){
+        file_put_contents('.htaccess', PHP_EOL . $htCache, FILE_APPEND);
+      }
     }
 
     echo '<div class="success">Замена прошла успешно!</div>';
