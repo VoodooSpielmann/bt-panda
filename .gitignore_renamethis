@@ -6,7 +6,12 @@
 *.zip
 .DS_Store
 /index.php
+/config.core.php
+/adminer.php
+/README.MD
+/zip.php
 /manager.policy.xml
+/watchers.xml
 /core/*
 /connectors/*
 /assets/components/*

@@ -89,11 +89,94 @@ $(document).ready(function(){
         if (th.data("reason")){
             $('.callOrderReason').val(th.data("reason"));
         }
+        if (th.data("button")){
+            $('.callOrderButton').text(th.data("button"));
+        }
         if (th.data("header")){
             $('.callOrderHeader').text(th.data("header"));
         }
         if (th.data("goal")){
-            $('#goalMetrikaModal').val(th.data("goal"));
+            $('.goalMetrikaModal').val(th.data("goal"));
         }
     });
+
+    /*Калькулятор*/
+    function calculator(cssClass, callback) {
+
+        var inp = $(cssClass).find("input[data-price]"),
+            sel = $(cssClass).find("select[data-price]"),
+            chk = $(cssClass).find("input[type='checkbox'][data-price]"),
+            th = $(cssClass);
+
+        th.find('[data-price]').on("keyup change ", function () {
+            var sum = 0,
+                result = 0,
+                resultSelect = 0,
+                resultCheckbox = 0,
+                arr = [];
+
+            /*Инпуты*/
+            for (var i = 0; i < inp.length; i++) {
+                var iv = inp[i].value,
+                    im = inp[i].name,
+                    ip = inp[i].dataset.price;
+                if (!isNaN(iv)) {
+                    result = iv * ip;
+                    arr[im] = iv;
+                    sum += result;
+                }
+            }
+
+            /*Селекты*/
+            for (var u = 0; u < sel.length; u++) {
+                var sc = sel[u],
+                    sm = sc.name;
+                for (var j = 0; j < sc.length; j++) {
+                    if (sc[j].selected == true) {
+                        var sv = sc[j].value;
+                        arr[sm] = sv;
+                        resultSelect = sc[j].dataset.price;
+                        sum += Number(resultSelect);
+                    }
+                }
+            }
+
+            /*Чекбоксы*/
+            for (var o = 0; o < chk.length; o++) {
+                if (chk[o].checked == true) {
+                    var cv = chk[o].value,
+                        cm = chk[o].name,
+                        cp = chk[o].dataset.price;
+                    resultCheckbox = cp;
+                    arr[cm] = cv;
+                    sum += Number(resultCheckbox);
+                }
+            }
+
+            arr['total'] = sum;
+
+            callback(arr); //массив с результатами
+        });
+    }
+
+    /*Вызов калькулятора, индивидуальные настройки*/
+    calculator('.calculator', function (arr) {
+        var th = $('.calculator'),
+            res = th.find('.price');
+
+        //console.log(arr);
+        res.text(arr['total'] + ' рублей');
+        th.find('input[name=price]').val(arr['total'] + ' рублей');
+    });
+
+    /*Цели метрики*/
+    /*$(document).on('af_complete', function(event, response) {
+        if (response.success) {
+            var goal = response.form[0].getElementsByClassName('goalMetrika')[0].value;
+            //var counter = response.form[0].getElementsByClassName('metrikaCounter')[0].value;
+            eval('yaCounter111111111.reachGoal('+goal+')');
+            gtag('event', goal, {'event_category': 'category'});
+        }
+    });*/
+
 });

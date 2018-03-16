@@ -1,6 +1,12 @@
 @import 'nib'
 @import 'rupture'
 
+files = 'bootstrap'
+for file in files
+  @import file+'.css'
+
+//@import '../fonts/stylesheet.css'
+
 /*Зачарование пикселей в ремы*/
 rem() {
   remified = ()
@@ -59,3 +65,35 @@ font1 = sans-serif
 .open
   .menu-mobile
     right 0
+
+/*Антиспам*/
+.sendmessage
+  position absolute
+  size 1px
+  left -99999px
+
+
+/*Генератор иконок*/
+/*
+  Использование -
+  1. Закинуть svg в папку
+  2. Добавить название файла в массив icons
+  3. Добавить .icon.icon-home к элементу
+*/
+icons = 'phone', 'mail'
+generate-icons(newicon)
+  &-{newicon}
+    &:before
+      background-image url('img/' + newicon + '.svg')
+
+/*Настройка иконок*/
+.icon
+  position relative
+  &:before
+    content ""
+    absolute left top
+    size 24px
+    background-repeat no-repeat
+    background-size contain
+  for newicon in icons
+    generate-icons(newicon)

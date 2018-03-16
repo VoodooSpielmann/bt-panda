@@ -6,16 +6,20 @@
     Подойдет для MIGX
     [[+phone:clearPhone]]
 */
-function clearPhone($phone){
-    $clear = str_replace(array('(', ')', '-', ' ','<span>','</span>'), '' , $phone);
-    if ($clear[0] == 8) {
-        $clear[0] = '7';
+if (!function_exists('clearPhone')) {
+    function clearPhone($phone)
+    {
+        $clear = str_replace(array('(', ')', '-', ' ', '+', '<span>', '</span>'), '', $phone);
+        if ($clear[0] == 8) {
+            $clear[0] = '7';
+        }
+        return '+' . $clear;
     }
-    return '+'.$clear;
 }
+
 $output = '';
 
-if($input){
+if ($input) {
     $output = clearPhone($input);
 } else {
     if (!empty($id) && is_numeric($id)) {

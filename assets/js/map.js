@@ -16,17 +16,18 @@ if (window.matchMedia('(min-width: 992px)').matches) {
         myMap.controls.add(zoomControl);
 
         objects = ymaps.geoQuery(ymaps.geocode('[[pdoField? &id=`[[++site_start]]` &field=`address`]]'))
+            //[[getImageList? &tvname=`addresses` &tpl=`@CODE:.add(ymaps.geocode('[[+address]]',{results: 1}))`]]
             .addToMap(myMap);
         objects.then(function () {
             objects.each(function (object) {
                 object.options.set('iconLayout', 'default#image');
-                object.options.set('iconImageHref', '../assets/css/img/map.png');
+                object.options.set('iconImageHref', '../assets/css/img/mappoint.svg');
                 object.options.set('iconImageSize', [95, 85]);
                 object.options.set('iconImageOffset', [-30, -100]);
             });
             myMap.setBounds(objects.getBounds(), {
                 checkZoomRange: true,
-                zoomMargin: [1000, 20, 20, 20]
+                zoomMargin: [80, 0, 0, 0]
             }).then(function () {
                 myMap.setZoom(15);
             });

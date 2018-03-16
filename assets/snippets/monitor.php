@@ -1,6 +1,6 @@
 <?php
 //Монитор производительности
-//[[++assets_path]]/snippets/monitor/monitor.php
+//[[++assets_path]]/snippets/monitor.php
 $site = '://' . $_SERVER['SERVER_NAME'];
 if (isset($_SERVER['HTTPS'])) {
     $site = ($_SERVER['HTTPS'] && $_SERVER['HTTPS'] != "off") ? "https" . $site : "http" . $site;
@@ -20,11 +20,11 @@ function get_content_from($url, $connect_timeout = 10, $timeout = 120)
 }
 
 $content = get_content_from($site);
-$pos = strpos($content, '<div id="monitorModx" style="display:none;">');
+$pos = strpos($content, '<div id="monitorSpeed" style="display:none;">');
 $content = substr($content, $pos);
 $pos = strpos($content, '</div>');
 $content = substr($content, 0, $pos);
-$content = str_replace('<div id="monitorModx" style="display:none;">', '', $content);
+$content = str_replace('<div id="monitorSpeed" style="display:none;">', '', $content);
 $content = str_replace('</div>', '', $content);
 $values = explode(";", $content);
 $seconds = floatval($values[3]);

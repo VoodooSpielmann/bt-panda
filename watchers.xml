@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <TaskOptions>
   <TaskOptions>
-    <option name="arguments" value="$FileDir$\$FileName$ -o $FileParentDir$ --pretty" />
+    <option name="arguments" value="$FileDir$\$FileName$ -o $FileParentDir$/templates/" />
     <option name="checkSyntaxErrors" value="true" />
     <option name="description" />
     <option name="exitCodeBehavior" value="ERROR" />
@@ -20,7 +20,7 @@
     <envs />
   </TaskOptions>
   <TaskOptions>
-    <option name="arguments" value="-u nib -u rupture $FileName$" />
+    <option name="arguments" value="-u nib -u rupture -m -c --include-css -r $FileName$" />
     <option name="checkSyntaxErrors" value="true" />
     <option name="description" />
     <option name="exitCodeBehavior" value="ERROR" />

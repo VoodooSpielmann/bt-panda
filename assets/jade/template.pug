@@ -1,14 +1,72 @@
+//Пример циклов
 mixin array(amount)
     - for (var i = 1; i < amount+1; i++)
     each val in ["1","2","3","4","5"]
         .item= val
+
+//Внешняя ссылка
+mixin link(text,classes,href,noindex,idlink,data)
+    -var link="#!"
+    if href
+        -var link='//'+href
+    -var nofollow = ''
+    if noindex
+        -var nofollow = " nofollow"
+        <!--noindex-->
+    a(href=link target="_blank" rel="noopener"+nofollow class=classes id=idlink title=text)&attributes(data)
+        if !block
+            =text
+        if block
+            block
+    if noindex
+        <!--/noindex-->
+
+//Обычная любая ссылка
+mixin a(text,classes,href,idlink,data)
+    -var link="#!"
+    if href
+        -var link = href
+    a(href=link class=classes id=idlink title=text)&attributes(data)
+        if !block
+            =text
+        if block
+            block
+
+//Ссылка-якорь с прокруткой
+mixin ac(text,classes,toid,href,data)
+    if !href
+        -var href=''
+    -var link=href+'#'+toid
+    a(href=link class=classes id=toid title=text)&attributes(data)=text
+        if block
+            block
+
+//Открытие почтовой программы
+mixin mailto(text,href,classes,idlink,data)
+    -var link='mailto:'+text
+    if href
+        -var link = 'mailto:'+href
+    a(href=link class=classes id=idlink title=text)&attributes(data)=text
+        if block
+            block
+
+//Звонок
+mixin tel(text,href,classes,idlink,data)
+    -var link='tel:'+text
+    if href
+        -var link = 'tel:'+href
+    a(href=link class=classes id=idlink title=text)&attributes(data)=text
+        if block
+
 block var
-    -var title = "Заголовок"
+    -var title = "Заголовок" // нужен для быстрого понимания, какой файл к какому макету относится
     -var assets = "../assets/"
     -var min = "" // .min
     -var img = assets+"css/img/"
-    -var tabcolor = "#FFF"
+    -var tabcolor = "#FFF" // перекрашивание вкладки в мобильных браузерах, Яндекс.Браузере и Vivaldi
     -var map = false
+    -var authorsProgramm = ''
+    -var authorsDesign = ''
 doctype html
 html(lang="ru")
     block head
@@ -16,24 +74,28 @@ html(lang="ru")
             meta(http-equiv="X-UA-Compatible" content="IE=edge")
             meta(name='viewport', content='width=device-width, initial-scale=1, minimum-scale=1')
             meta(charset='utf-8')
-            title= title
-            //[[*pagetitle]] | [[++site_name]]
+            title= title // [[*longtitle:empty=`[[*pagetitle]]`]] | [[++site_name]]
             //base(href="[[++site_url]]")
             meta(name='description', content='[[*description]]')
             meta(name='keywords', content='[[*keywords]]')
-            meta(name='author', content='pandaworks.ru')
+            meta(name='author', content='Интернет-агенство Пандаворкс. Программирование и верстка: ' + authorsProgramm + '. Дизайн: ' + authorsDesign + '. pandaworks.ru')
             meta(property='og:title', content='[[*pagetitle]]')
             meta(property="og:description" content="[[*description:empty=`[[*pagetitle]]`]]")
             meta(property='og:type', content='website')
-            meta(property='og:url', content='[[++site_url]][[~[[*id]]]]')
-            meta(property='og:image', content=img + 'ogimage.png')
+            meta(property='og:url', content='[[~[[*id]]? &scheme=`full`]]')
+            meta(property='og:image', content='[[++site_url]]assets/css/img/ogimage.png')
             meta(name="theme-color" content=tabcolor)
-            link(rel="stylesheet" type="text/css" href=assets + "fonts/stylesheet" + min + ".css")
-            each val in ["bootstrap","style"]
+            // Место для favicon с favicomatic.com в lazy режиме
+            // Файл favicon.ico обязательно должен лежать в корне
+
+            //link(rel="stylesheet" type="text/css" href=assets + "fonts/stylesheet" + min + ".css")
+            //each val in ["bootstrap","style"]
                 link(rel="stylesheet" type="text/css" href=assets + "css/" + val + min + ".css")
+
+            link(rel="stylesheet" type="text/css" href=assets + "css/style.css")
     body
         block header
-          //-button.btn(data-toggle="modal" data-target="#modalId" data-reason="Название для получателя письма" data-header="[[pdoField? &id=`[[++site_start]]` &field=`modalHeader`]]" data-goal="metrikaModalHeader") Модальное окно
+          //-button.btn(data-toggle="modal" data-target="#modalId" data-button="[[pdoField? &id=`[[++site_start]]` &field=`modalHeaderButtonWindow`]]" data-reason="Название для получателя письма" data-header="[[pdoField? &id=`[[++site_start]]` &field=`modalHeader`]]" data-goal="metrikaModalHeader") Модальное окно
         block mobilemenu
         block content
         block footer
@@ -55,12 +117,14 @@ html(lang="ru")
                         .modal-body
                             //-.modal-text [[pdoField? &id=`[[++site_start]]` &field=`politikaConfidency`]]
         block scripts
-            script(type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js")
+            // эта jquery будет браться из кэша браузера у пользователей, что быстрее, чем загрузка заново
+            script(src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js")
+            //script(src=assets + "js/jquery-3.3.1.js"") //резервная копия jquery
             if map
-                script(type="text/javascript" src="http://api-maps.yandex.ru/2.1/?lang=ru_RU")
-                script(type="text/javascript" src=assets + "js/ymapstouch" + min + ".js")
+                script(src="http://api-maps.yandex.ru/2.1/?lang=ru_RU")
+                script(src=assets + "js/ymapstouch" + min + ".js")
                 script
                     include ../js/map.js
-            each val in ["bootstrap","script"]
+            each val in ["bootstrap",'svg4everybody.legacy',"script"]
                 script(type="text/javascript" src=assets + "js/" + val + min + ".js")
-            #monitorModx(style="display:none;") [^qt^];[^q^];[^p^];[^t^];[^s^]
+            #monitorSpeed(style="display:none;") [^qt^];[^q^];[^p^];[^t^];[^s^]
