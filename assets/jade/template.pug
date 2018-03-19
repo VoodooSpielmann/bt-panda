@@ -1,10 +1,10 @@
-//Пример циклов
+//- Пример циклов
 mixin array(amount)
     - for (var i = 1; i < amount+1; i++)
     each val in ["1","2","3","4","5"]
         .item= val
 
-//Внешняя ссылка
+//- Внешняя ссылка
 mixin link(text,classes,href,noindex,idlink,data)
     -var link="#!"
     if href
@@ -21,7 +21,7 @@ mixin link(text,classes,href,noindex,idlink,data)
     if noindex
         <!--/noindex-->
 
-//Обычная любая ссылка
+//- Обычная любая ссылка
 mixin a(text,classes,href,idlink,data)
     -var link="#!"
     if href
@@ -32,7 +32,7 @@ mixin a(text,classes,href,idlink,data)
         if block
             block
 
-//Ссылка-якорь с прокруткой
+//- Ссылка-якорь с прокруткой
 mixin ac(text,classes,toid,href,data)
     if !href
         -var href=''
@@ -41,7 +41,7 @@ mixin ac(text,classes,toid,href,data)
         if block
             block
 
-//Открытие почтовой программы
+//- Открытие почтовой программы
 mixin mailto(text,href,classes,idlink,data)
     -var link='mailto:'+text
     if href
@@ -50,7 +50,7 @@ mixin mailto(text,href,classes,idlink,data)
         if block
             block
 
-//Звонок
+//- Звонок
 mixin tel(text,href,classes,idlink,data)
     -var link='tel:'+text
     if href
@@ -59,11 +59,11 @@ mixin tel(text,href,classes,idlink,data)
         if block
 
 block var
-    -var title = "Заголовок" // нужен для быстрого понимания, какой файл к какому макету относится
-    -var assets = "../assets/"
-    -var min = "" // .min
+    -var title = "Заголовок" //- нужен для быстрого понимания, какой файл к какому макету относится
+    -var assets = "../" //- ../assets/
+    -var min = "" //- .min
     -var img = assets+"css/img/"
-    -var tabcolor = "#FFF" // перекрашивание вкладки в мобильных браузерах, Яндекс.Браузере и Vivaldi
+    -var tabcolor = "#FFF" //- перекрашивание вкладки в мобильных браузерах, Яндекс.Браузере и Vivaldi
     -var map = false
     -var authorsProgramm = ''
     -var authorsDesign = ''
@@ -74,8 +74,9 @@ html(lang="ru")
             meta(http-equiv="X-UA-Compatible" content="IE=edge")
             meta(name='viewport', content='width=device-width, initial-scale=1, minimum-scale=1')
             meta(charset='utf-8')
-            title= title // [[*longtitle:empty=`[[*pagetitle]]`]] | [[++site_name]]
-            //base(href="[[++site_url]]")
+            title= title
+            //- [[*longtitle:empty=`[[*pagetitle]]`]] | [[++site_name]]
+            //- base(href="[[++site_url]]")
             meta(name='description', content='[[*description]]')
             meta(name='keywords', content='[[*keywords]]')
             meta(name='author', content='Интернет-агенство Пандаворкс. Программирование и верстка: ' + authorsProgramm + '. Дизайн: ' + authorsDesign + '. pandaworks.ru')
@@ -85,11 +86,11 @@ html(lang="ru")
             meta(property='og:url', content='[[~[[*id]]? &scheme=`full`]]')
             meta(property='og:image', content='[[++site_url]]assets/css/img/ogimage.png')
             meta(name="theme-color" content=tabcolor)
-            // Место для favicon с favicomatic.com в lazy режиме
-            // Файл favicon.ico обязательно должен лежать в корне
+            //- Место для favicon с favicomatic.com в lazy режиме
+            //- Файл favicon.ico обязательно должен лежать в корне
 
-            //link(rel="stylesheet" type="text/css" href=assets + "fonts/stylesheet" + min + ".css")
-            //each val in ["bootstrap","style"]
+            //-link(rel="stylesheet" type="text/css" href=assets + "fonts/stylesheet" + min + ".css")
+            //-each val in ["bootstrap","style"]
                 link(rel="stylesheet" type="text/css" href=assets + "css/" + val + min + ".css")
 
             link(rel="stylesheet" type="text/css" href=assets + "css/style.css")
@@ -117,9 +118,10 @@ html(lang="ru")
                         .modal-body
                             //-.modal-text [[pdoField? &id=`[[++site_start]]` &field=`politikaConfidency`]]
         block scripts
-            // эта jquery будет браться из кэша браузера у пользователей, что быстрее, чем загрузка заново
+            //- Эта jquery будет браться из кэша браузера у пользователей, что быстрее, чем загрузка заново.
             script(src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js")
-            //script(src=assets + "js/jquery-3.3.1.js"") //резервная копия jquery
+            //- Резервная копия jquery
+            //- script(src=assets + "js/jquery-3.3.1.js"")
             if map
                 script(src="http://api-maps.yandex.ru/2.1/?lang=ru_RU")
                 script(src=assets + "js/ymapstouch" + min + ".js")
