@@ -169,6 +169,17 @@ $(document).ready(function(){
         th.find('input[name=price]').val(arr['total'] + ' рублей');
     });
 
+    /*Input c data-onlynumbers, в который можно вводить только цифры*/
+    var input = $("[data-onlynumbers]"),
+        regexp = /^\-?[0-9]*$/;
+
+    input.keypress(function (e) {
+        var check = $(this).val() + String.fromCharCode(e.charCode);
+        if (!regexp.test(check)) {
+            return false;
+        }
+    });
+
     /*Цели метрики*/
     /*$(document).on('af_complete', function(event, response) {
         if (response.success) {
