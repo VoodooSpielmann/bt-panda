@@ -1,0 +1,31 @@
+<script>
+  function svg() {
+        var url = 'sprite.svg';
+        $.ajax({
+            url: url,
+            success: function (data) {
+                var svg = '<div class="debug-svg">';
+                $('symbol', data).each(function () {
+                    var id = $(this).attr('id');
+                    svg += '<p><svg><use href="'+url+'#'+id+'"></use></svg> - '+id+'</p>';
+                });
+                $('body').append(svg);
+            }
+        });
+        return true;
+    };
+</script>
+
+<style>
+  .debug-svg
+    z-index 9999
+    fixed top 0 left 0
+    background-color #fff
+    p
+      display flex
+      align-items center
+    svg
+      size 60px
+      fill #000
+      stroke #000
+</style>
